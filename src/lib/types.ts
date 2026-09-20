@@ -6,6 +6,8 @@ export type Priority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'
 
 export type Frequency = 'ONCE' | 'DAILY' | 'WEEKLY' | 'MONTHLY'
 
+export type NoteStatus = 'TODO' | 'IN_PROGRESS' | 'COMPLETED'
+
 export interface TaskItem {
   id: string
   title: string
@@ -16,6 +18,15 @@ export interface TaskItem {
   priority: Priority
   category?: string | null
   createdAt: string
+  estimatedMins?: number
+  bgTheme?: 'purple' | 'yellow' | 'blue' | 'emerald' | 'pink'
+  iconType?: 'briefcase' | 'design' | 'task' | 'general'
+  status?: NoteStatus
+  startTime?: string
+  endTime?: string
+  location?: string
+  members?: string[]
+  colorBorder?: 'green' | 'red' | 'yellow' | 'purple' | 'blue' | 'pink' | 'cyan' | 'orange'
 }
 
 export interface NoteItem {
@@ -26,6 +37,15 @@ export interface NoteItem {
   isGeneral: boolean
   tags: string[]
   createdAt: string
+  estimatedMins?: number
+  bgTheme?: 'purple' | 'yellow' | 'blue' | 'emerald' | 'pink'
+  iconType?: 'briefcase' | 'design' | 'task' | 'general'
+  status?: NoteStatus
+  startTime?: string
+  endTime?: string
+  location?: string
+  members?: string[]
+  colorBorder?: 'green' | 'red' | 'yellow' | 'purple' | 'blue' | 'pink' | 'cyan' | 'orange'
 }
 
 export interface AccountItem {

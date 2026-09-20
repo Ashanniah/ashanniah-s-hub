@@ -114,20 +114,115 @@ const INITIAL_TASKS: TaskItem[] = [
 const INITIAL_NOTES: NoteItem[] = [
   {
     id: 'note-1',
-    title: 'Weekly Focus & Goals',
-    content: '1. Maintain calorie deficit under 2,100 kcal.\n2. Complete 4 strength sessions.\n3. Deposit $500 to savings account.',
-    date: new Date().toISOString().split('T')[0],
-    isGeneral: false,
-    tags: ['goals', 'productivity'],
+    title: 'Salsile project brief',
+    content: 'Salsile Inc. is a well-established fashion retailer specializing in high-quality clothing and accessories for men and women. The client is looking to revamp their existing e-commerce website to enhance user experience, improve overall aesthetics, and increase online sales. The new design should reflect their brand identity as a modern, and customer-centric fashion store.',
+    date: '14-08-2023',
+    isGeneral: true,
+    tags: ['design', 'project', 'brief'],
     createdAt: new Date().toISOString(),
+    estimatedMins: 4,
+    bgTheme: 'purple',
+    iconType: 'briefcase',
+    status: 'TODO',
+    startTime: '11:00',
+    endTime: '12:30',
+    colorBorder: 'orange',
   },
   {
     id: 'note-2',
-    title: 'High-Protein Smoothie Recipe',
-    content: '- 1 scoop Whey Isolate\n- 250ml Almond Milk\n- 1 tbsp Peanut Butter\n- 1/2 frozen Banana\n\nTotal: 340 kcal (32g P, 25g C, 12g F)',
+    title: 'Choosing A Quality Cookware Set',
+    content: 'Review product specs, brand warranties, and ergonomic stainless steel set options.',
+    date: '15-08-2023',
     isGeneral: true,
-    tags: ['fitness', 'nutrition'],
+    tags: ['kitchen', 'shopping'],
     createdAt: new Date().toISOString(),
+    estimatedMins: 15,
+    bgTheme: 'yellow',
+    iconType: 'general',
+    status: 'TODO',
+    startTime: '11:00',
+    endTime: '12:30',
+    colorBorder: 'red',
+  },
+  {
+    id: 'note-3',
+    title: 'Design management',
+    content: 'We have to manage all our design project everyday in one tool.',
+    date: '14-08-2023',
+    isGeneral: true,
+    tags: ['management', 'ui-ux'],
+    createdAt: new Date().toISOString(),
+    estimatedMins: 8,
+    bgTheme: 'yellow',
+    iconType: 'design',
+    status: 'IN_PROGRESS',
+    startTime: '13:00',
+    endTime: '14:00',
+    colorBorder: 'yellow',
+  },
+  {
+    id: 'note-4',
+    title: 'Shooting Stars',
+    content: 'Prepare night photography telescope settings, lens filters, and tripod alignment.',
+    date: '12-08-2023',
+    isGeneral: true,
+    tags: ['astronomy', 'photo'],
+    createdAt: new Date().toISOString(),
+    estimatedMins: 30,
+    bgTheme: 'emerald',
+    iconType: 'general',
+    status: 'IN_PROGRESS',
+    startTime: '09:00',
+    endTime: '11:30',
+    colorBorder: 'green',
+  },
+  {
+    id: 'note-5',
+    title: 'Astronomy Binoculars A Great Alternative',
+    content: 'Compare 10x50 binocular light gathering specs vs entry reflector telescopes.',
+    date: '16-08-2023',
+    isGeneral: true,
+    tags: ['astronomy', 'gear'],
+    createdAt: new Date().toISOString(),
+    estimatedMins: 20,
+    bgTheme: 'yellow',
+    iconType: 'general',
+    status: 'IN_PROGRESS',
+    startTime: '11:00',
+    endTime: '12:30',
+    colorBorder: 'yellow',
+  },
+  {
+    id: 'note-6',
+    title: 'Daily task due',
+    content: 'There is always some daily we have in our hand which we have to done.',
+    date: '14-08-2023',
+    isGeneral: true,
+    tags: ['daily', 'tasks'],
+    createdAt: new Date().toISOString(),
+    estimatedMins: 6,
+    bgTheme: 'purple',
+    iconType: 'task',
+    status: 'COMPLETED',
+    startTime: '15:00',
+    endTime: '17:59',
+    colorBorder: 'pink',
+  },
+  {
+    id: 'note-7',
+    title: 'The Amazing Hubble',
+    content: 'Document deep space optical images, nebula filters, and NASA public archive logs.',
+    date: '13-08-2023',
+    isGeneral: true,
+    tags: ['space', 'research'],
+    createdAt: new Date().toISOString(),
+    estimatedMins: 45,
+    bgTheme: 'purple',
+    iconType: 'general',
+    status: 'COMPLETED',
+    startTime: '12:00',
+    endTime: '15:00',
+    colorBorder: 'purple',
   },
 ]
 
@@ -171,9 +266,11 @@ interface AppContextType {
   exerciseLogs: ExerciseLogItem[]
   dailyHealth: DailyHealthSummary
   addTask: (task: Omit<TaskItem, 'id' | 'createdAt'>) => void
+  updateTask: (id: string, taskData: Partial<TaskItem>) => void
   toggleTask: (id: string) => void
   deleteTask: (id: string) => void
   addNote: (note: Omit<NoteItem, 'id' | 'createdAt'>) => void
+  updateNote: (id: string, noteData: Partial<NoteItem>) => void
   deleteNote: (id: string) => void
   addAccount: (account: Omit<AccountItem, 'id'>) => void
   deleteAccount: (id: string) => void
@@ -297,6 +394,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     )
   }
 
+  const updateTask = (id: string, taskData: Partial<TaskItem>) => {
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, ...taskData } : t))
+    )
+  }
+
   const deleteTask = (id: string) => {
     setTasks((prev) => prev.filter((t) => t.id !== id))
   }
@@ -309,6 +412,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       createdAt: new Date().toISOString(),
     }
     setNotes((prev) => [newNote, ...prev])
+  }
+
+  const updateNote = (id: string, noteData: Partial<NoteItem>) => {
+    setNotes((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, ...noteData } : n))
+    )
   }
 
   const deleteNote = (id: string) => {
@@ -386,9 +495,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         exerciseLogs,
         dailyHealth,
         addTask,
+        updateTask,
         toggleTask,
         deleteTask,
         addNote,
+        updateNote,
         deleteNote,
         addAccount,
         deleteAccount,
